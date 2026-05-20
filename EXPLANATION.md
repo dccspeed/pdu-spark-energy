@@ -434,3 +434,180 @@ All datasets:
 
 See `data/DATA_DESCRIPTION.md` for complete technical specifications.
 
+
+---
+
+## 🔬 Spark History Server Event Logs
+
+### NEW: Comprehensive Workload Dataset
+
+The repository now includes **600 Spark application event logs** that perfectly correlate with the power measurement data, enabling stage-level energy analysis.
+
+**Archive:** `data/HSs_light_load.tar.xz` (77 MB)  
+**Period:** December 19-27, 2024 (aligns with `all_power_light_processed.csv.gz`)
+
+### Dataset Highlights
+
+**600 Applications across 5 workload types:**
+- **SVM** - Support Vector Machine (120 apps)
+- **Kmeans** - K-Means Clustering (120 apps)
+- **Pagerank** - Graph Ranking (120 apps)
+- **Terasort** - Sorting Benchmark (120 apps)
+- **Matfact** - Matrix Factorization (120 apps)
+
+**2 VM Configurations:**
+- **VM6cores:** 200 apps (6-core VMs, 1 per worker)
+- **VM3cores:** 400 apps (3-core VMs, 2 per worker)
+
+### Perfect Temporal Alignment
+
+```
+December 19-27, 2024:
+┌────────────────────────────────┐
+│ Spark Applications (600 apps) │  ← Event logs
+│ Power Measurements (3.19M)     │  ← PDU data
+└────────────────────────────────┘
+      Same time period!
+```
+
+This enables:
+- ✅ **Stage-level energy correlation**
+- ✅ **Workload energy profiling**
+- ✅ **Task-level power analysis**
+- ✅ **Energy-aware scheduling research**
+
+### Quick Start
+
+```python
+import pduhistoryserver as hs
+from pdumetrics import PowerMetrics
+
+# Load power data
+pm = PowerMetrics('data/all_power_light_processed.csv.gz')
+
+# Analyze a Spark application
+app = 'data/VM6cores/SVM/application_1734637358713_0001'
+start, end = hs.get_time_interval(app)
+
+# Get energy consumption for this app
+hosts = hs.get_hosts(app)
+outlets = om.get_outlets_from_hosts(hosts)
+
+total_energy = sum([
+    pm.get_energy_watt_second_and_power_avg_watt(o, start, end)[0]
+    for o in outlets
+])
+
+print(f"App consumed {total_energy/3600:.2f} Wh")
+```
+
+**For complete details:** See [`data/SPARK_HISTORY_DESCRIPTION.md`](data/SPARK_HISTORY_DESCRIPTION.md)
+
+
+### Heavy Load Dataset (NEW)
+
+**Archive:** `data/HSs_heavy_load.tar.xz` (144 MB)  
+**Period:** January 16, 2025 (within heavy power monitoring period)  
+**Applications:** 600 additional Spark applications
+
+**Same structure** as light load:
+- 200 apps on VM6cores
+- 400 apps on VM3cores  
+- 5 workload types (SVM, Kmeans, Pagerank, Terasort, Matfact)
+
+**Key Difference:** Heavy load = more intensive workloads (larger logs)
+
+### Complete Dataset Collection
+
+**Total:** 1,200 Spark applications + 15.8M power measurements
+
+| Dataset Type | Dataset | Period | Size | Records/Apps |
+|--------------|---------|--------|------|--------------|
+| **Power** | Standard | May 2024 | 23 MB | 4.08M |
+| **Power** | Light | Dec 19-27, 2024 | 18 MB | 3.19M |
+| **Power** | Heavy | Dec 31-Jan 29 | 48 MB | 8.50M |
+| **Spark** | Light Load | Dec 19-27, 2024 | 77 MB | 600 apps |
+| **Spark** | Heavy Load | Jan 16, 2025 | 144 MB | 600 apps |
+
+### Perfect Temporal Correlations
+
+```
+Timeline 2024-2025:
+  
+  May 24 ─────── Jun 2    Standard Power (no Spark logs)
+  
+  Dec 19 ─────── Dec 27   Light Power + Light Spark (600 apps) ✅
+  
+  Dec 31 ────────────────────────── Jan 29
+         ↑
+         Jan 16: Heavy Spark (600 apps) ✅
+         Heavy Power monitors entire period
+```
+
+### Research Enabled
+
+With both light and heavy load datasets:
+- ✅ **Load comparison** - Same workloads under different intensities
+- ✅ **Workload analysis** - 5 algorithm types × 2 loads = 10 variants
+- ✅ **Configuration study** - VM3cores vs VM6cores in both scenarios
+- ✅ **Energy modeling** - 1,200 apps for robust statistical analysis
+- ✅ **Validation** - Cross-validate findings across multiple datasets
+
+
+### Standard Dataset (NEW)
+
+**Archive:** `data/HSs_standard_load.tar.xz` (148 MB)  
+**Period:** June 2, 2024  
+**Applications:** 800 Spark applications (largest dataset!)
+
+**Structure:**
+- 400 apps on VM6cores (80 per workload)
+- 400 apps on VM3cores (80 per workload)  
+- 5 workload types (SVM, Kmeans, Pagerank, Terasort, Matfact)
+
+**Key Features:**
+- Baseline measurements from May/June 2024
+- 2x more VM6cores apps than light/heavy (80 vs 40 per workload)
+- Ideal for establishing baseline energy profiles
+
+### Complete Dataset Collection (UPDATED)
+
+**Total:** 2,000 Spark applications + 15.8M power measurements
+
+| Dataset Type | Dataset | Period | Size | Records/Apps |
+|--------------|---------|--------|------|--------------|
+| **Power** | Standard | May 24-Jun 2, 2024 | 23 MB | 4.08M |
+| **Power** | Light | Dec 19-27, 2024 | 18 MB | 3.19M |
+| **Power** | Heavy | Dec 31-Jan 29, 2025 | 48 MB | 8.50M |
+| **Spark** | Standard | Jun 2, 2024 | 148 MB | 800 apps |
+| **Spark** | Light Load | Dec 19-27, 2024 | 77 MB | 600 apps |
+| **Spark** | Heavy Load | Jan 16, 2025 | 144 MB | 600 apps |
+
+### Perfect Temporal Correlations (UPDATED)
+
+```
+Timeline 2024-2025:
+  
+  May 24 ─────────────────── Jun 2    Standard Power
+                              ▲
+                              Jun 2: Standard Spark (800 apps) ✅
+  
+  Dec 19 ─────── Dec 27   Light Power + Light Spark (600 apps) ✅
+  
+  Dec 31 ────────────────────────── Jan 29
+         ↑
+         Jan 16: Heavy Spark (600 apps) ✅
+         Heavy Power monitors entire period
+```
+
+### Research Enabled (UPDATED)
+
+With all three datasets:
+- ✅ **Temporal analysis** - Compare energy across three time periods (May, Dec, Jan)
+- ✅ **Load comparison** - Same workloads under standard, light, and heavy loads
+- ✅ **Baseline establishment** - 800 standard apps for reference metrics
+- ✅ **Workload analysis** - 400 apps per workload type for robust statistics
+- ✅ **Configuration study** - VM3cores vs VM6cores across all conditions
+- ✅ **Energy modeling** - 2,000 apps for comprehensive predictive models
+- ✅ **Validation** - Cross-validate findings across three independent datasets
+

@@ -167,3 +167,145 @@ This will automatically:
 ---
 
 *Metadata files (this file and metadata.json) are tracked in git for documentation purposes.*
+
+---
+
+## Spark History Server Event Logs
+
+### 📊 HSs_light_load.tar.xz
+
+**Archive Type:** Spark History Server event logs  
+**Size:** 77 MB compressed (~250 MB extracted)  
+**Period:** December 19-27, 2024  
+**Applications:** 600 Spark applications
+
+**Perfect Temporal Correlation:** These Spark logs cover the exact same time period as `all_power_light_processed.csv.gz`, enabling direct correlation between application execution and energy consumption.
+
+**Contents:**
+- **200 applications** on VM6cores configuration (6-core VMs)
+- **400 applications** on VM3cores configuration (3-core VMs)
+
+**Workload Types (120 apps each):**
+1. SVM - Support Vector Machine classification
+2. Kmeans - K-Means clustering
+3. Pagerank - Graph ranking algorithm
+4. Terasort - Large-scale sorting benchmark
+5. Matfact - Matrix factorization (collaborative filtering)
+
+**Structure:**
+```
+HSs_light_load/
+├── VM6cores/{SVM,Kmeans,Pagerank,Terasort,Matfact}/ (40 apps each)
+└── VM3cores/{SVM,Kmeans,Pagerank,Terasort,Matfact}/ (80 apps each)
+```
+
+**For complete details**, see: [`SPARK_HISTORY_DESCRIPTION.md`](SPARK_HISTORY_DESCRIPTION.md)
+
+**Usage:**
+```bash
+# Extract archive
+tar -xf HSs_light_load.tar.xz
+
+# Analyze with pduhistoryserver.py
+import pduhistoryserver as hs
+datafile = 'VM6cores/SVM/application_1734637358713_0001'
+start, end = hs.get_time_interval(datafile)
+stages = hs.get_stage_profiles(datafile, metric_names)
+```
+
+**Note:** This archive is excluded from git (see `.gitignore`) due to size.
+
+---
+
+*Updated: 2026-05-20 - Added Spark History Server event logs*
+
+### 📊 HSs_heavy_load.tar.xz
+
+**Archive Type:** Spark History Server event logs  
+**Size:** 144 MB compressed (~450 MB extracted)  
+**Period:** January 16, 2025  
+**Applications:** 600 Spark applications
+
+**Temporal Correlation:** These logs fall within the `all_power_heavy_processed.csv.gz` monitoring period (Dec 31, 2024 - Jan 29, 2025), enabling correlation with the extended power dataset.
+
+**Contents:**
+- **200 applications** on VM6cores configuration
+- **400 applications** on VM3cores configuration
+- **Same workload types** as light load (SVM, Kmeans, Pagerank, Terasort, Matfact)
+
+**Structure:** Identical to light load dataset (VM6cores/VM3cores directories)
+
+**Comparison with Light Load:**
+- Heavy load: 144 MB archive (larger event logs, more intensive runs)
+- Light load: 77 MB archive (lighter workloads)
+- Both: 600 applications with same structure
+
+**Note:** Both Spark history archives are excluded from git (see `.gitignore`) due to size.
+
+---
+
+## Summary: Complete Dataset Collection
+
+### Power Metrics (3 datasets, 15.8M records, 90 MB)
+1. ✅ `all_power_standard_processed.csv.gz` - May 2024 baseline
+2. ✅ `all_power_light_processed.csv.gz` - Dec 19-27, 2024
+3. ✅ `all_power_heavy_processed.csv.gz` - Dec 31, 2024 - Jan 29, 2025
+
+### Spark History Logs (2 datasets, 1,200 apps, 221 MB)
+4. ✅ `HSs_light_load.tar.xz` - 600 apps (Dec 19-27) → correlates with light power
+5. ✅ `HSs_heavy_load.tar.xz` - 600 apps (Jan 16) → correlates with heavy power
+
+### Perfect Correlations
+- **Light:** Spark logs + Power data (Dec 19-27, 2024) ✅
+- **Heavy:** Spark logs + Power data (Jan 16 within Dec 31-Jan 29) ✅
+
+**Total:** 5 datasets enabling comprehensive Spark energy analysis
+
+---
+
+*Updated: 2026-05-20 - Complete dataset collection documented*
+
+### 📊 HSs_standard_load.tar.xz (NEW)
+
+**Archive Type:** Spark History Server event logs  
+**Size:** 148 MB compressed (~460 MB extracted)  
+**Period:** June 2, 2024  
+**Applications:** 800 Spark applications
+
+**Temporal Correlation:** These logs from June 2, 2024 fall within the `all_power_standard_processed.csv.gz` monitoring period (May 24 - Jun 2, 2024), enabling correlation with baseline power data.
+
+**Contents:**
+- **400 applications** on VM6cores configuration (80 per workload)
+- **400 applications** on VM3cores configuration (80 per workload)
+- **Same workload types** as light/heavy (SVM, Kmeans, Pagerank, Terasort, Matfact)
+
+**Structure:** Identical to light/heavy datasets (VM6cores/VM3cores directories)
+
+**Key Difference:** Larger dataset with more apps per workload (80 vs 40 on VM6cores)
+
+**Note:** All Spark history archives excluded from git (see `.gitignore`) due to size.
+
+---
+
+## Summary: Complete Dataset Collection (UPDATED)
+
+### Power Metrics (3 datasets, 15.8M records, 90 MB)
+1. ✅ `all_power_standard_processed.csv.gz` - May 24-Jun 2, 2024
+2. ✅ `all_power_light_processed.csv.gz` - Dec 19-27, 2024
+3. ✅ `all_power_heavy_processed.csv.gz` - Dec 31, 2024 - Jan 29, 2025
+
+### Spark History Logs (3 datasets, 2,000 apps, 369 MB)
+4. ✅ `HSs_standard_load.tar.xz` - 800 apps (Jun 2) → correlates with standard power ✅
+5. ✅ `HSs_light_load.tar.xz` - 600 apps (Dec 19-27) → correlates with light power ✅
+6. ✅ `HSs_heavy_load.tar.xz` - 600 apps (Jan 16) → correlates with heavy power ✅
+
+### Perfect Correlations
+- **Standard:** Spark logs + Power data (Jun 2 within May 24-Jun 2) ✅
+- **Light:** Spark logs + Power data (Dec 19-27, 2024) ✅  
+- **Heavy:** Spark logs + Power data (Jan 16 within Dec 31-Jan 29) ✅
+
+**Total:** 6 datasets enabling comprehensive Spark energy analysis across three time periods
+
+---
+
+*Updated: 2026-05-20 - Complete dataset collection with standard load added*

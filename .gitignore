@@ -71,3 +71,17 @@ plot_scripts/output/
 *.png
 !docs/*.png
 !docs/*.pdf
+
+# Spark History Server event logs (extracted directories)
+data/VM3cores/
+data/VM6cores/
+
+# Keep Spark history archive and metadata
+!data/HSs_light_load.tar.xz
+!data/SPARK_HISTORY_DESCRIPTION.md
+
+# Spark History Server archives (heavy and light load)
+data/HSs_*.tar.xz
+
+# But keep the documentation
+!data/SPARK_HISTORY_DESCRIPTION.md
